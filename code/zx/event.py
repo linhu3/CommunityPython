@@ -1,24 +1,27 @@
 import tornado.ioloop
 import tornado.web
-import os,MySQLdb
+import tornado.httpserver
+import os,MySQLdb,dbapi
 
-class eventHandler(tornado.web.RequestHandler):
+class historyHandler(tornado.web.RequestHandler):
 	def get(self):
-		self.write("Show event page.")
+		self.render("index.html")
 
 	def post(self):
-		userid=self.get_argument("userid")
-		eventid=self.get_argument("eventid")
+		username=self.get_argument("username")
+		print self.application.dbapi.getEventById(1)
 
-settings = {
-	"static_path": os.path.join(os.path.dirname(__file__), "static"),
-	"debug": True,
-}
-
-application=tornado.web.Application([
-	(r"/api/history",testHandler),
-],**settings)
-
+class app(tornado.web.Application):
+	def __init__(self):
+		settings={
+			"static_path": os.path.join(os.path.dirname(__file__), "static"),
+			"debug": True,
+		}
+		handlers=[(r"/api/history",historyHandler),]
+		tornado.web.Application.__init__(self,handlers,**settings)
+		self.dbapi=dbapi.dbapi()
+		
 if __name__=="__main__":
-	application.listen(8080)
+	server=tornado.httpserver.HTTPServer(app())
+	server.listen(8080)
 	tornado.ioloop.IOLoop.instance().start()

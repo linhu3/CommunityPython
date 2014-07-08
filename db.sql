@@ -24,7 +24,7 @@ CREATE TABLE user
 	primary key(id),
 	unique(name)
 );
-
+.
 /*
 用户信息表(用户头像放在统一文件夹下，以id为标识符)
 id:对应用户id

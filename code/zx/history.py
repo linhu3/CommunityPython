@@ -9,7 +9,7 @@ class historyHandler(tornado.web.RequestHandler):
 
 	def post(self):
 		username=self.get_argument("username")
-		print self.application.dbapi.getEventById(1)
+		print self.application.dbapi.getUserById(1)
 
 class app(tornado.web.Application):
 	def __init__(self):
