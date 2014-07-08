@@ -28,6 +28,8 @@ CREATE TABLE user
 /*
 用户信息表(用户头像放在统一文件夹下，以id为标识符)
 id:对应用户id
+cardid:身份证号
+phone:电话
 name:用户昵称
 sex:性别
 age:年龄
@@ -41,6 +43,7 @@ longitude:纬度
 CREATE TABLE info
 (
 	id int NOT NULL,
+    cardid varchar(50) NOT NULL,
 	name varchar(50) NOT NULL,
 	sex int,
 	age int,
