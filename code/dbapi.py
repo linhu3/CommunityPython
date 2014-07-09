@@ -56,5 +56,40 @@ class dbapi:
 			return []
 		return self.getEventsByUserId(user["userid"])
 
+        #check if cardid exist
+	#exist return dict
+	#not exist return none
+	def getInfoBycardid(self,cardid):
+                cursor=self.db.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+		sql="select * from info where cardid=%s"
+		param=(cardid,)
+		cursor.execute(sql,param)
+		result=cursor.fetchone()
+		cursor.close()
+		return result
+
+	#register a new user
+	#pre condiction:no user.name,info.cardid duplicate
+	#after : insert new user,new info
+	def register(self,content):
+                cursor = self.db.cursor()
+                
+                sql = "insert into user(name,kind,password) values(%s,%s,%s)"
+                param = (content["username"],content["kind"],content["password"])
+                cursor.execute(sql,param)
+                self.db.commit()
+                
+                cursor.execute('SELECT LAST_INSERT_ID()')
+                result=cursor.fetchone()
+                print result[0]
+                
+                sql = "insert into info(id,cardid,name,sex,age,address,illness,credit,score) values(%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+                param = (result[0],content["cardid"],content["realname"],content["sex"],content["age"],content["address"],content["illness"],0,0)
+                cursor.execute(sql,param)
+                self.db.commit()
+                
+                cursor.close()
+                return
+
 	def __del__(self):
 		self.db.close()
