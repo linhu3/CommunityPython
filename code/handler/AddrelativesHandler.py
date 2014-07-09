@@ -1,3 +1,4 @@
+'''Yeqin Zheng, 09/07/2014'''
 import tornado.ioloop
 import tornado.web
 import tornado.httpserver
@@ -5,6 +6,7 @@ import os, json, sys
 sys.path.append("..")
 import  dbapi
 
+''' Add a relation between two users. Succeed with "1" returned, else with "0". '''
 
 class AddrelativesHandler(tornado.web.RequestHandler):
     def post(self):
