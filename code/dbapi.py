@@ -28,19 +28,21 @@ class dbapi:
 		cursor.close()
 		return 0
 
-	def write(self):
-		return "FKU"
-
-	def regist(self):
-                content = '{"username": "haha","password": 111111,"kind": 1, "cardid":11301 ,"realname":"hiii","sex":1,"age":41, "address":"iii","illness":"hijiiii"}'
-                j = json.loads(content)
+        #register insert data
+	def regist(self,content):
+                #content = '{"username": "haha","password": 111111,"kind": 1, "cardid":11301 ,"realname":"hiii","sex":1,"age":41, "address":"iii","illness":"hijiiii"}'
+                #j = json.loads(content)
                 cursor = self.db.cursor()
                 sql = "insert into user(name,kind,password) values(%s,%s,%s)"
-                param = (j["username"],j["kind"],j["password"])
+                param = (content["username"],content["kind"],content["password"])
                 cursor.execute(sql,param)
                 self.db.commit()
                 print param
                 return sql
+
+        def hasuserName(self,username):
+                cursor = self.db.cursor()
+                sql = "select name from user where name = "
     
 	def __del__(self):
 		self.db.close()
