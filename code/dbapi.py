@@ -57,7 +57,7 @@ class dbapi:
 			return []
 		return self.getEventsByUserId(user["userid"])
 	
-    #check if cardid exist
+        #check if cardid exist
 	#exist return dict
 	#not exist return none
 	def getInfoBycardid(self,cardid):
@@ -90,7 +90,7 @@ class dbapi:
         self.db.commit()
                 
         cursor.close()
-        return
+         return
 
     #insert support mseeage in event
     #pre condiction:user.id，event.id exist;event.state = 0
@@ -104,25 +104,10 @@ class dbapi:
         cursor.close()
         return
 
-	def getRelationByUserId(self, u_id, r_id):
-		cursor=self.db.cursor(cursorclass=MySQLdb.cursors.DictCursor)
-		sql="SELECT * FROM relation WHERE usrid = '" + u_id + "' AND cid = '" + r_id + "'"
-		cursor.execute(sql)
-		row = int(cursor.rowcount)
-		cursor.close()
-		return row
+    #get all relativeName by user.id
+    def getAllRelativeNamebyUid(self,uid):
+    	return
 
-	def deleteRelationByUserId(self, u_id, r_id):
-		cursor=self.db.cursor(cursorclass=MySQLdb.cursors.DictCursor)
-		sql="DELETE FROM relation WHERE usrid = '" + u_id + "' AND cid = '" + r_id + "'"
-		cursor.execute(sql)
-		cursor.close()
-
-	def addRelationByUserId(self, u_id, r_id):
-		cursor=self.db.cursor(cursorclass=MySQLdb.cursors.DictCursor)
-		sql="INSERT INTO relation (usrid, cid, kind) VALUES ('" + u_id + "', '" + r_id + "', '1')"
-		cursor.execute(sql)
-		cursor.close()
 
 	'''Yeqin Zheng, 09/07/2014'''
 	def getRelationByUserId(self, u_name, r_name):
@@ -158,38 +143,6 @@ class dbapi:
 		cursor.close()
 
 	'''.'''
-
-	#Anton Zhong
-	def getUserIdByUserName(self,username):
-		cursor=self.db.cursor(cursorclass=MySQLdb.cursors.DictCursor)
-		sql="select id from user where name=%s"
-		param=(username,)
-		cursor.execute(sql,param)
-		result=cursor.fetchone()
-		cursor.close()
-		return result
-
-	def addEventByUserName(self,username,message):
-		usrid=self.getUserIdByUserName(username)
-		cursor=self.db.cursor(cursorclass=MySQLdb.cursors.DictCursor)
-		if(not usrid):
-			return {"errorCode":403,"errorDesc":"No Such User: "+username}
-		else:
-			if(not("kind" in message and "content" in message)):
-				return {"errorCode":403,"errorDesc":"Messge Incomplete"}
-			else:
-				sql="insert into event (usrid,kind,state,content) values (%s,%s,%s)"
-				param=(message["usrid"],0,message["content"])
-				if("assist" in message):
-					sql="insert into event (usrid,kind,state,content,assist) values (%s,%s,%s,%s)"
-					param=(message["usrid"],0,message["content"],message["assits"])
-				cursor.execute(sql,param)
-
-				#return last insert id
-				cursor.execute("select last_insert_id()")
-				return {"errorCode":200,"errorDesc":"","eventid":cursor.fetchone()["last_insert_id()"]}
-
-	#07/09
 
 	def __del__(self):
 		self.db.close()
