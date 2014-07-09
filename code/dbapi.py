@@ -159,5 +159,37 @@ class dbapi:
 
 	'''.'''
 
+	#Anton Zhong
+	def getUserIdByUserName(self,username):
+		cursor=self.db.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+		sql="select id from user where name=%s"
+		param=(username,)
+		cursor.execute(sql,param)
+		result=cursor.fetchone()
+		cursor.close()
+		return result
+
+	def addEventByUserName(self,username,message):
+		usrid=self.getUserIdByUserName(username)
+		cursor=self.db.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+		if(not usrid):
+			return {"errorCode":403,"errorDesc":"No Such User: "+username}
+		else:
+			if(not("kind" in message and "content" in message)):
+				return {"errorCode":403,"errorDesc":"Messge Incomplete"}
+			else:
+				sql="insert into event (usrid,kind,state,content) values (%s,%s,%s)"
+				param=(message["usrid"],0,message["content"])
+				if("assist" in message):
+					sql="insert into event (usrid,kind,state,content,assist) values (%s,%s,%s,%s)"
+					param=(message["usrid"],0,message["content"],message["assits"])
+				cursor.execute(sql,param)
+
+				#return last insert id
+				cursor.execute("select last_insert_id()")
+				return {"errorCode":200,"errorDesc":"","eventid":cursor.fetchone()["last_insert_id()"]}
+
+	#07/09
+
 	def __del__(self):
 		self.db.close()
