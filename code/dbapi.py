@@ -124,5 +124,40 @@ class dbapi:
 		cursor.execute(sql)
 		cursor.close()
 
+	'''Yeqin Zheng, 09/07/2014'''
+	def getRelationByUserId(self, u_name, r_name):
+		result = self.getUserByUserName(u_name)
+		u_id = str(result["id"])
+		result = self.getUserByUserName(r_name)
+		r_id = str(result["id"])
+		cursor=self.db.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+		sql="SELECT * FROM relation WHERE usrid = '" + u_id + "' AND cid = '" + r_id + "'"
+		cursor.execute(sql)
+		row = int(cursor.rowcount)
+		cursor.close()
+		return row
+
+	def deleteRelationByUserId(self, u_name, r_name):
+		result = self.getUserByUserName(u_name)
+		u_id = str(result["id"])
+		result = self.getUserByUserName(r_name)
+		r_id = str(result["id"])
+		cursor=self.db.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+		sql="DELETE FROM relation WHERE usrid = '" + u_id + "' AND cid = '" + r_id + "'"
+		cursor.execute(sql)
+		cursor.close()
+
+	def addRelationByUserId(self, u_name, r_name):
+		result = self.getUserByUserName(u_name)
+		u_id = str(result["id"])
+		result = self.getUserByUserName(r_name)
+		r_id = str(result["id"])
+		cursor=self.db.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+		sql="INSERT INTO relation (usrid, cid, kind) VALUES ('" + u_id + "', '" + r_id + "', '1')"
+		cursor.execute(sql)
+		cursor.close()
+
+	'''.'''
+
 	def __del__(self):
 		self.db.close()

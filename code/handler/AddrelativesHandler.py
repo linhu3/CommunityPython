@@ -5,14 +5,15 @@ import os, json, sys
 sys.path.append("..")
 import  dbapi
 
+
 class AddrelativesHandler(tornado.web.RequestHandler):
     def post(self):
-        u_id = self.get_argument('u_id')
-        r_id = self.get_argument('r_id')
+        u_name = self.get_argument('u_name')
+        r_name = self.get_argument('r_name')
 
-        row = self.application.dbapi.getRelationByUserId(u_id, r_id)
+        row = self.application.dbapi.getRelationByUserId(u_name, r_name)
         if row == 0:
-            self.application.dbapi.addRelationByUserId(u_id, r_id)
+            self.application.dbapi.addRelationByUserId(u_name, r_name)
             add_message = {'state': 1}
         else:
             add_message = {'state': 0}
