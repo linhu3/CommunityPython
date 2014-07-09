@@ -43,7 +43,7 @@ class AddRelatives(tornado.web.RequestHandler):
         row = int(cursor.rowcount)
         if row == 0:
             sql = "INSERT INTO relation (usrid, cid, kind) VALUES ('" + u_id + "', '" + r_id + "', '1')"
-            #self.write(sql)
+            self.write(sql)
             try:
                 cursor.execute(sql)
                 self.application.db.commit()
