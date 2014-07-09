@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import MySQLdb,json
 
 #in init function please change the config to fit your own requirement
@@ -88,6 +89,18 @@ class dbapi:
                 cursor.execute(sql,param)
                 self.db.commit()
                 
+                cursor.close()
+                return
+
+        #insert support mseeage in event
+        #pre condiction:user.id，event.id exist;event.state = 0
+        #after: uptate assist in event
+        def supportmessageinsert(self,content):
+                cursor = self.db.cursor()
+                sql ="update event set assist= %s where id = %s"
+                param = (content["assist"],content["eventid"])
+                cursor.execute(sql,param)
+                self.db.commit()
                 cursor.close()
                 return
 
