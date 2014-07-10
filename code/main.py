@@ -16,7 +16,7 @@ from handler import *
 #register url handler
 #class RegisterHandler(tornado.web.RequestHandler):
 #        def post(self):
-                #content = self.get_argument("content")
+								#content = self.get_argument("content")
 #                content = '{"username": "haha","password": 111111,"kind": 1, "cardid":11301 ,"realname":"hiii","sex":1,"age":41, "address":"iii","illness":"hijiiii"}'
 #                j = json.loads(content)
 #               if(self.application.dbapi.hasuserName(j['username'])):
@@ -28,8 +28,8 @@ from handler import *
 
 #login url handler
 class IndexHandler(tornado.web.RequestHandler):
-        def get(self):
-                self.render("index.html")
+				def get(self):
+								self.render("index.html")
 
 #class authentication
 
@@ -42,23 +42,24 @@ class app(tornado.web.Application):
 			"debug": True
 		}
 		handlers=[(r"/",IndexHandler),
-                          (r"/api/login",LoginHandler.LoginHandler),
-                          (r"/api/register",RegisterHandler.RegisterHandler),
-                          (r"/api/userauthentication",AuthenHandler.AuthenHandler),
-                          (r"/api/logout",LogoutHandler.LogoutHandler),
-                          (r"/api/cancel",CancelHandler.CancelHandler),
-                          (r"/api/checkrelatives",CheckrelativesHandler.CheckrelativesHandler),
-                          (r"/api/deleterelatives",DeleterelativesHandler.DeleterelativesHandler),
-                          (r"/api/addrelatives",AddrelativesHandler.AddrelativesHandler),
-                          (r"/api/history",HistoryHandler.HistoryHandler),
-                          (r"/api/helpmessage",HelpmessageHandler.HelpmessageHandler),
-                          (r"/api/supportmessage",SupportmessageHandler.SupportmessageHandler),
-                          (r"/api/finish",FinishHandler.FinishHandler),
-                          (r"/api/givecredit",GivecreditHandler.GivecreditHandler),
-                          (r"/api/addaid",AddaidHandler.AddaidHandler),
-                          (r"/api/sendsupport",SendsupportHandler.SendsupportHandler),
-                          (r"/api/quitaid",QuitaidHandler.QuitaidHandler)
-                          ]
+													(r"/api/login",LoginHandler.LoginHandler),
+													(r"/api/register",RegisterHandler.RegisterHandler),
+													(r"/api/userauthentication",AuthenHandler.AuthenHandler),
+													(r"/api/logout",LogoutHandler.LogoutHandler),
+													(r"/api/cancel",CancelHandler.CancelHandler),
+													(r"/api/checkrelatives",CheckrelativesHandler.CheckrelativesHandler),
+													(r"/api/deleterelatives",DeleterelativesHandler.DeleterelativesHandler),
+													(r"/api/addrelatives",AddrelativesHandler.AddrelativesHandler),
+													(r"/api/history",HistoryHandler.HistoryHandler),
+													(r"/api/helpmessage",HelpmessageHandler.HelpmessageHandler),
+													(r"/api/supportmessage",SupportmessageHandler.SupportmessageHandler),
+													(r"/api/finish",FinishHandler.FinishHandler),
+													(r"/api/givecredit",GivecreditHandler.GivecreditHandler),
+													(r"/api/addaid",AddaidHandler.AddaidHandler),
+													(r"/api/sendsupport",SendsupportHandler.SendsupportHandler),
+													(r"/api/quitaid",QuitaidHandler.QuitaidHandler),
+													(r"/api/event",EventHandler.EventHandler)
+													]
 		tornado.web.Application.__init__(self,handlers,**settings)
 		self.dbapi=dbapi.dbapi()
 		
