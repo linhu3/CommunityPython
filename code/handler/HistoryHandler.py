@@ -8,8 +8,8 @@ class HistoryHandler(tornado.web.RequestHandler):
 		self.write("<p>historyHandler</p><form action='/api/history' method='post'><input type='submit' value='submit'></form>")
 
 	def post(self):
-		content='{"id":1,"name":"test1"}'
+		content='{"id":1,"name":"ooo"}'
 		jobj=json.loads(content)
-		his1=self.application.dbapi.getEventsByUserId(jobj['id'])
+		#his1=self.application.dbapi.getEventsByUserId(jobj['id'])
 		his2=self.application.dbapi.getEventsByUserName(jobj['name'])
-		self.write(str([his1,his2]))
+		self.write(str(his2))

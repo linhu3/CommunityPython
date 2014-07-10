@@ -2,9 +2,7 @@
 import tornado.ioloop
 import tornado.web
 import tornado.httpserver
-import os, json, sys
-sys.path.append("..")
-import  dbapi
+import json
 
 ''' Add a relation between two users. Succeed with "1" returned, else with "0". '''
 

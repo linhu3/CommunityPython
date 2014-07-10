@@ -1,9 +1,8 @@
 import tornado.ioloop
 import tornado.web
 import tornado.httpserver
-import os,sys,json
-sys.path.append("..")
-import dbapi
+import json
+
 class SupportmessageHandler(tornado.web.RequestHandler):
 	def post(self):
 		#content = self.get_argument("content")

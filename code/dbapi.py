@@ -180,6 +180,7 @@ class dbapi:
 		cursor=self.db.cursor(cursorclass=MySQLdb.cursors.DictCursor)
 		sql="DELETE FROM relation WHERE usrid = '" + u_id + "' AND cid = '" + r_id + "'"
 		cursor.execute(sql)
+		self.db.commit()
 		cursor.close()
 
 	def addRelationByUsername(self, u_name, r_name):
