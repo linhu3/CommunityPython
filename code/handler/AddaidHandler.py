@@ -13,4 +13,5 @@ class AddaidHandler(tornado.web.RequestHandler):
             u_name = self.get_argument('u_name')
             e_id = self.get_argument('e_id')
 
-            self.write("{'state': " + self.application.dbapi.addaidhelper(u_name, e_id) + "}")
+            result = self.application.dbapi.addaidhelper(u_name, e_id)
+            self.write("{'state': " + result + "}")

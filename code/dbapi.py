@@ -57,7 +57,7 @@ class dbapi:
 		return self.getEventsByUserId(user["userid"])
 
 	'''Yeqin Zheng, 09/07/2014'''
-	def getRelationByUserId(self, u_name, r_name):
+	def getRelationByUsername(self, u_name, r_name):
 		result = self.getUserByUserName(u_name)
 		u_id = str(result["id"])
 		result = self.getUserByUserName(r_name)
@@ -69,7 +69,7 @@ class dbapi:
 		cursor.close()
 		return row
 
-	def deleteRelationByUserId(self, u_name, r_name):
+	def deleteRelationByUsername(self, u_name, r_name):
 		result = self.getUserByUserName(u_name)
 		u_id = str(result["id"])
 		result = self.getUserByUserName(r_name)
@@ -79,7 +79,7 @@ class dbapi:
 		cursor.execute(sql)
 		cursor.close()
 
-	def addRelationByUserId(self, u_name, r_name):
+	def addRelationByUsername(self, u_name, r_name):
 		result = self.getUserByUserName(u_name)
 		u_id = str(result["id"])
 		result = self.getUserByUserName(r_name)

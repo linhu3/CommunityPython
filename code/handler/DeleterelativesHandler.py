@@ -14,12 +14,12 @@ class DeleterelativesHandler(tornado.web.RequestHandler):
         u_name = self.get_argument('u_name')
         r_name = self.get_argument('r_name')
 
-        row = self.application.dbapi.getRelationByUserId(u_name, r_name)
+        row = self.application.dbapi.getRelationByUsername(u_name, r_name)
         #self.write(row2)
         if row == 0 :
             delete_message = {'state': 0}
         else :
-            self.application.dbapi.deleteRelationByUserId(u_name, r_name)
+            self.application.dbapi.deleteRelationByUsername(u_name, r_name)
             delete_message = {'state': 1}
 
         self.write(delete_message)
