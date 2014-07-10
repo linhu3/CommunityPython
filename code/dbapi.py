@@ -89,6 +89,20 @@ class dbapi:
 		cursor.execute(sql)
 		cursor.close()
 
+	def addaidhelper(self, u_name, e_id):
+		result = self.getUserByUserName(u_name)
+		u_id = str(result["id"])
+		result = self.getEventByEventId(e_id)
+		if result["state"] == 0:
+			return "0"
+		else :
+			cursor=self.db.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+			sql="INSERT INTO helper (eid, usrid) VALUES ('" + e_id + "', '" + u_id + "')"
+			cursor.execute(sql)
+			cursor.close()
+			return "1"
+
+
 	'''.'''
 
 	def __del__(self):
