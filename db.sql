@@ -20,6 +20,7 @@ CREATE TABLE user
 	name varchar(50) NOT NULL,
 	kind int NOT NULL,
 	password varchar(30),
+    cid varchar(40),
 	primary key(id),
 	unique(name)
 );
