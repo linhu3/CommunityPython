@@ -9,8 +9,6 @@ import MySQLdb,json
 class dbapi:
 	def __init__(self):
 		self.host="localhost"
-		#self.user="comhelp"
-		#self.passwd="20140629"
 		self.user="root"
 		self.passwd="root"
 		self.dbname="community"
@@ -57,7 +55,7 @@ class dbapi:
 		user=self.getUserByUserName(username)
 		if(not user):
 			return []
-		return self.getEventsByUserId(user["userid"])
+		return self.getEventsByUserId(user["id"])
 
 	#check if cardid exist
 	#exist return dict
@@ -80,7 +78,7 @@ class dbapi:
 		param = (content["username"],content["kind"],content["password"])
 		cursor.execute(sql,param)
 		self.db.commit()
-
+		
 		cursor.execute('SELECT LAST_INSERT_ID()')
 		result=cursor.fetchone()
 		print result[0]
@@ -89,11 +87,31 @@ class dbapi:
 		param = (result[0],content["cardid"],content["realname"],content["sex"],content["age"],content["address"],content["illness"],0,0)
 		cursor.execute(sql,param)
 		self.db.commit()
-
+				
+		cursor.close()
+		return 
+ 
+	#insert support mseeage in event
+	#pre condiction:user.id，event.id exist;event.state = 0
+	#after: uptate assist in event
+	def supportmessageinsert(self,content):
+		cursor = self.db.cursor()
+		sql ="update event set assist= %s where id = %s"
+		param = (content["assist"],content["eventid"])
+		cursor.execute(sql,param)
+		self.db.commit()
 		cursor.close()
 		return
 
-		#update user cid by uid
+	def getRelationByUserId(self, u_id, r_id):
+		cursor=self.db.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+		sql="SELECT * FROM relation WHERE usrid = '" + u_id + "' AND cid = '" + r_id + "'"
+		cursor.execute(sql)
+		row = int(cursor.rowcount)
+		cursor.close()
+		return row
+
+	#update user cid by uid
 	#untest
 	def UpdateCidByuid(self,cid,uid):
 		cursor = self.db.cursor()
@@ -186,6 +204,97 @@ class dbapi:
 			cursor.execute(sql)
 			cursor.close()
 			return "1"
+	'''.'''
+
+	#Anton Zhong
+	def getUserIdByUserName(self,username):
+		cursor=self.db.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+		sql="select id from user where name=%s"
+		param=(username,)
+		cursor.execute(sql,param)
+		result=cursor.fetchone()
+		cursor.close()
+		return result
+
+	def addEventByUserName(self,username,message):
+		usrid=self.getUserIdByUserName(username)
+		cursor=self.db.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+		if(not usrid):
+			return {"errorCode":403,"errorDesc":"No Such User: "+username}
+		else:
+			if(not("kind" in message and "content" in message)):
+				return {"errorCode":403,"errorDesc":"Messge Incomplete"}
+			else:
+				sql="insert into event (usrid,kind,state,content) values (%s,%s,%s,%s)"
+				param=(usrid["id"],message["kind"],0,message["content"])
+				if("assist" in message):
+					sql="insert into event (usrid,kind,state,content,assist) values (%s,%s,%s,%s,%s)"
+					param=(usrid["id"],message["kind"],0,message["content"],message["assist"])
+				cursor.execute(sql,param)
+				self.db.commit()
+
+				#return last insert id
+				cursor.execute("select last_insert_id()")
+				return {"errorCode":200,"errorDesc":"","eventid":cursor.fetchone()["last_insert_id()"]}
+		cursor.close()
+
+	#07/09
+
+	#Anton Zhong
+	def getHelperByEventIdAndUserName(self,eid,username):
+		usrid=self.getUserIdByUserName(username)
+		#No such user return none
+		if(not usrid):
+			return None
+		cursor=self.db.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+		sql="select * from helper where eid=%s and usrid=%s"
+		param=(eid,usrid["id"])
+		cursor.execute(sql,param)
+		result=cursor.fetchone()
+		cursor.close()
+		return result
+
+	def checkHelperByEventIdAndUserName(self,eid,username):
+		usrid=self.getUserIdByUserName(username)
+		if(not usrid):
+			return False
+		cursor=self.db.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+		sql="select usrid from helper where eid=%s"
+		param=(eid,)
+		cursor.execute(sql,param)
+		result=cursor.fetchone()
+		if(not result):
+			return False
+		return True
+
+	def addSupportByEventIdAndUserName(self,eid,username,message):
+		if(not self.checkHelperByEventIdAndUserName(eid,username)):
+			return {"errorCode":403,"errorDesc":"No Such Helper "+str(username)+" in event "+str(eid)}
+		if(not ("content" in message) ):
+			return {"errorCode":403,"errorDesc":"Messge Incomplete"}
+		else:
+			cursor=self.db.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+			sql="insert into support (eid,usrid,content) values (%s,%s,%s)"
+			param=(eid,self.getUserIdByUserName(username)["id"],message["content"])
+			cursor.execute(sql,param)
+			self.db.commit()
+			cursor.execute("select last_insert_id()")
+			result=cursor.fetchone()
+			cursor.close()
+			return {"errorCode":200,"errorDesc":"","supportid":result["last_insert_id()"]}
+
+	def setCreditByEventIdAndUserName(self,eid,username,credit):
+		if(not self.checkHelperByEventIdAndUserName(eid,username)):
+			return {"errorCode":403,"errorDesc":"No Such Helper "+str(username)+" in event "+str(eid)}
+		cursor=self.db.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+		sql="update helper set credit = %s where eid=%s and usrid=%s"
+		usrid=self.getUserIdByUserName(username)
+		param=(credit,eid,usrid["id"])
+		cursor.execute(sql,param)
+		self.db.commit()
+		cursor.close()
+		return {"errorCode":200,"errorDesc":""}
+	#07/10
 
 	def __del__(self):
 		self.db.close()
