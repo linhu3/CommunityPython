@@ -180,7 +180,7 @@ class dbapi:
 		result = self.getEventByEventId(e_id)
 		if result["state"] == 0:
 			return "0"
-		else :
+		else:
 			cursor=self.db.cursor(cursorclass=MySQLdb.cursors.DictCursor)
 			sql="INSERT INTO helper (eid, usrid) VALUES ('" + e_id + "', '" + u_id + "')"
 			cursor.execute(sql)
