@@ -111,7 +111,7 @@ class dbapi:
 
 
 	'''Yeqin Zheng, 09/07/2014'''
-	def getRelationByUserId(self, u_name, r_name):
+	def getRelationByUsername(self, u_name, r_name):
 		result = self.getUserByUserName(u_name)
 		u_id = str(result["id"])
 		result = self.getUserByUserName(r_name)
@@ -123,7 +123,7 @@ class dbapi:
 		cursor.close()
 		return row
 
-	def deleteRelationByUserId(self, u_name, r_name):
+	def deleteRelationByUsername(self, u_name, r_name):
 		result = self.getUserByUserName(u_name)
 		u_id = str(result["id"])
 		result = self.getUserByUserName(r_name)
@@ -133,7 +133,7 @@ class dbapi:
 		cursor.execute(sql)
 		cursor.close()
 
-	def addRelationByUserId(self, u_name, r_name):
+	def addRelationByUsername(self, u_name, r_name):
 		result = self.getUserByUserName(u_name)
 		u_id = str(result["id"])
 		result = self.getUserByUserName(r_name)
@@ -142,6 +142,19 @@ class dbapi:
 		sql="INSERT INTO relation (usrid, cid, kind) VALUES ('" + u_id + "', '" + r_id + "', '1')"
 		cursor.execute(sql)
 		cursor.close()
+
+	def addaidhelper(self, u_name, e_id):
+		result = self.getUserByUserName(u_name)
+		u_id = str(result["id"])
+		result = self.getEventByEventId(e_id)
+		if result["state"] == 0:
+			return "0"
+		else :
+			cursor=self.db.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+			sql="INSERT INTO helper (eid, usrid) VALUES ('" + e_id + "', '" + u_id + "')"
+			cursor.execute(sql)
+			cursor.close()
+			return "1"
 
 	def __del__(self):
 		self.db.close()
