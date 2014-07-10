@@ -93,6 +93,17 @@ class dbapi:
 		cursor.close()
 		return
 
+		#update user cid by uid
+	#untest
+	def UpdateCidByuid(self,cid,uid):
+		cursor = self.db.cursor()
+		sql = "update user set cid = %s where id = %s"
+		param = (cid,uid)
+		cursor.execute(sql,param)
+		self.db.commit()
+		cursor.close()
+		return
+		
 	#insert support mseeage in event
 	#pre condiction:user.id，event.id exist;event.state = 0
 	#after: uptate assist in event
@@ -106,7 +117,27 @@ class dbapi:
 		return
 
     #get all relativeName by user.id
+    #return a list contain all relations(including uid)
 	def getAllRelativeNamebyUid(self,uid):
+		cursor = self.db.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+		sql = "select * from relation where usrid = %s"
+		param = (uid,)
+		rlist = []
+		rlist.append(uid)
+		cursor.execute(sql,param)
+		for row in cursor.fetchall():
+			rlist.append(row["cid"])
+		return rlist
+
+	# change a event sate to 1
+	#in order to end a event
+	def changeEventState(self,eid):
+		cursor = self.db.cursor()
+		sql ="update event set state= %s where id = %s"
+		param = (1,eid)
+		cursor.execute(sql,param)
+		self.db.commit()
+		cursor.close()
 		return
 
 
