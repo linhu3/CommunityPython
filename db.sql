@@ -43,7 +43,7 @@ longitude:纬度
 CREATE TABLE info
 (
 	id int NOT NULL,
-    cardid varchar(50) NOT NULL,
+	cardid varchar(50) NOT NULL,
 	name varchar(50) NOT NULL,
 	sex int,
 	age int,
