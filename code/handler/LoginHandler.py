@@ -13,7 +13,7 @@ class LoginHandler(tornado.web.RequestHandler):
                         self.write("{'state':1}")
                         print "username not exist"
                         return
-                if(user["password"]!= passwd)
+                if(user["password"]!= passwd):
                         self.write("{'state':2}")
                         print "passwd incorrect"
                         return

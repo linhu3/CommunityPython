@@ -51,7 +51,7 @@ class app(tornado.web.Application):
                           (r"/api/deleterelatives",DeleterelativesHandler.DeleterelativesHandler),
                           (r"/api/addrelatives",AddrelativesHandler.AddrelativesHandler),
                           (r"/api/history",HistoryHandler.HistoryHandler),
-                          (r"/api/helpmessage",HelpmessageHandler.HelpmessageHandler),
+                          (r"/api/helpmessage",HelpmessageHandler.HelpMessageHandler),
                           (r"/api/supportmessage",SupportmessageHandler.SupportmessageHandler),
                           (r"/api/finish",FinishHandler.FinishHandler),
                           (r"/api/givecredit",GivecreditHandler.GivecreditHandler),
