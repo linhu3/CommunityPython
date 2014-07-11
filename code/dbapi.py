@@ -9,8 +9,8 @@ import MySQLdb,json
 class dbapi:
 	def __init__(self):
 		self.host="localhost"
-		self.user="root"
-		self.passwd="root"
+		self.user="comhelp"
+		self.passwd="20140629"
 		self.dbname="community"
 		self.charset="utf8"
 		self.db=MySQLdb.connect(host=self.host,user=self.user,passwd=self.passwd,db=self.dbname,charset=self.charset)
@@ -35,15 +35,10 @@ class dbapi:
 
 	def CheckRelationbyId(self,userid):
 		cursor=self.db.cursor(cursorclass=MySQLdb.cursors.DictCursor)
-		sql="select cid from relation where relation.usrid=%s"
-		param=(userid,):
+		sql="select * from relation where usrid=%s"
+		param=(userid,)
 		cursor.execute(sql,param)
-		result1=cursor.fetchall()
-		result=[]
-		if result1 is not None:
-			for x in result1:
-				cursor.eccute("selcet * from info where info.id=x")
-				result.append(cursor.fetchone())
+		result=cursor.fetchall()
 		cursor.close()
 		return result
 
