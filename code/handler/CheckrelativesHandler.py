@@ -10,7 +10,7 @@ class CheckrelativesHandler(tornado.web.RequestHandler):
 		username=self.get_argument("content")
 		userid=self.application.dbapi.getUserByUserName(username)["id"]
 		re=self.application.dbapi.CheckRelationbyId(userid)
-		if re!=[]:
+		if re!=():
 			relatives=[]
 			for row in re:
 				name=self.application.dbapi.getUsermassegeByUserId(row["cid"])
