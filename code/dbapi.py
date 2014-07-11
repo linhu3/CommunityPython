@@ -33,6 +33,29 @@ class dbapi:
 		cursor.close()
 		return result
 
+	def CheckRelationbyId(self,userid):
+		cursor=self.db.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+		sql="select cid from relation where relation.usrid=%s"
+		param=(userid,):
+		cursor.execute(sql,param)
+		result1=cursor.fetchall()
+		result=[]
+		if result1 is not None:
+			for x in result1:
+				cursor.eccute("selcet * from info where info.id=x")
+				result.append(cursor.fetchone())
+		cursor.close()
+		return result
+
+	def getUsermassegeByUserId(self,userid):
+		cursor=self.db.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+		sql="select * from user ,info where user.id=%s and info.id=%s"
+		param=(userid,userid)
+		cursor.execute(sql,param)
+		result=cursor.fetchall()
+		cursor.close()
+		return result
+
 	def getEventByEventId(self,eventid):
 		cursor=self.db.cursor(cursorclass=MySQLdb.cursors.DictCursor)
 		sql="select * from event where id=%s"
