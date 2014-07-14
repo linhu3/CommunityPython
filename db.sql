@@ -25,7 +25,7 @@ CREATE TABLE user
     state int,
 	primary key(id),
 	unique(name)
-);
+)DEFAULT CHARSET=utf8;
 
 /*
 用户信息表(用户头像放在统一文件夹下，以id为标识符)
@@ -58,7 +58,7 @@ CREATE TABLE info
 	primary key(id),
 	foreign key(id) references user(id)
 	ON DELETE CASCADE
-);
+)DEFAULT CHARSET=utf8;
 
 /*
 用户单向关系表
@@ -77,7 +77,7 @@ CREATE TABLE relation
 	foreign key(usrid) references user(id) ON DELETE CASCADE,
 	foreign key(cid) references user(id)
 	ON DELETE CASCADE
-);
+)DEFAULT CHARSET=utf8;
 
 /*
 事件表
@@ -87,6 +87,10 @@ kind:事件类型(安全，生活，健康)
 state:事件状态(求助中，结束)
 content:事件求助信息(包含位置，事件内容，时间等)
 assist:事件辅助信息(包含图片，语音等)
+latitude:经度
+longitude:纬度
+starttime 求助开始时间,
+endtime	求助结束时间,
 */
 CREATE TABLE event
 (
@@ -98,10 +102,12 @@ CREATE TABLE event
 	assist blob,
 	latitude DECIMAL,
 	longitude DECIMAL,
+	starttime datetime,
+	endtime	datetime,
 	primary key(id),
 	foreign key(usrid) references user(id)
 	ON DELETE CASCADE
-);
+)DEFAULT CHARSET=utf8;
 
 /*
 事件<>帮客关系表
@@ -121,7 +127,7 @@ CREATE TABLE helper
 	foreign key(eid) references event(id) ON DELETE CASCADE,
 	foreign key(usrid) references user(id)
 	ON DELETE CASCADE
-);
+)DEFAULT CHARSET=utf8;
 
 /*
 事件<>援助信息表
@@ -130,6 +136,7 @@ id:自增id
 eid:事件id
 usrid:帮客的用户id
 content:援助信息内容
+time 信息发送时间
 */
 CREATE TABLE support
 (
@@ -137,11 +144,12 @@ CREATE TABLE support
 	eid int NOT NULL,
 	usrid int NOT NULL,
 	content blob NOT NULL,
+	time datetime,
 	primary key(id),
 	foreign key(eid) references event(id) ON DELETE CASCADE,
 	foreign key(usrid) references user(id)
 	ON DELETE CASCADE
-);
+)DEFAULT CHARSET=utf8;
 
  /*
  第三方登录的绑定关系表

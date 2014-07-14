@@ -27,5 +27,5 @@ class LoginHandler(tornado.web.RequestHandler):
 			return
 		self.application.dbapi.updateUserstate(user['id'],1)
 		self.write("{'state':3}")
-		print("Login")
+		print("Login success")
 		return

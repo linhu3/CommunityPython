@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import tornado.ioloop
 import tornado.web
 import tornado.httpserver
@@ -9,7 +10,7 @@ class RegisterHandler(tornado.web.RequestHandler):
 
 	def post(self):
 		#content = self.get_argument("content")
-		content = '{"username": "test2","password": "test2","kind": 1, "cardid":"test2" ,"realname":"realtest2","sex":1,"age":41, "address":"iii","illness":"hijiiii"}'
+		content = '{"username": "你好吗","password": "sda","kind": 1, "cardid":"tests2" ,"realname":"realtest2","sex":1,"age":41, "address":"iii","illness":"hijiiii"}'
 		j = json.loads(content)
 		if(self.application.dbapi.getUserByUserName(j['username']) is not None):
 			self.write("{'state':1}")
@@ -19,8 +20,8 @@ class RegisterHandler(tornado.web.RequestHandler):
 			self.write("{'state':2}")
 			print "cardid exist"
 			return
-		
 		self.application.dbapi.register(j)
+		u = self.application.dbapi.getUserByUserName(j['username']);
 		self.write("{'state':3}")
 		print("Register")
 		return

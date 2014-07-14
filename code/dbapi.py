@@ -42,8 +42,6 @@ class dbapi:
 		cursor.close()
 		return
 
-
-
 	def CheckRelationbyId(self,userid):
 		cursor=self.db.cursor(cursorclass=MySQLdb.cursors.DictCursor)
 		sql="select * from relation where usrid=%s"
@@ -57,8 +55,6 @@ class dbapi:
 		cursor=self.db.cursor(cursorclass=MySQLdb.cursors.DictCursor)
 		sql="select * from user ,info where user.id=%s and info.id=%s"
 		param=(userid,userid)
-		#sql="select * from user where user.id=%s"
-		#param=(userid)
 		cursor.execute(sql,param)
 		result=cursor.fetchone()
 		cursor.close()
@@ -188,7 +184,17 @@ class dbapi:
 		self.db.commit()
 		cursor.close()
 		return
-
+	#cancle a user by user(id)
+	#pre condiction: uid exist
+	#after:delete all record of this user
+	def cancelUser(self,uid):
+		cursor = self.db.cursor()
+		sql = "delete from user where id = %s"
+		param = (uid,)
+		cursor.execute(sql,param)
+		self.db.commit()
+		cursor.close()
+		return
 
 	'''Yeqin Zheng, 09/07/2014'''
 	def getRelationByUsername(self, u_name, r_name):
