@@ -11,8 +11,9 @@ drop table IF EXISTS user;
 id:自增id
 name:登录用户名
 kind:用户类型(普通用户，认证用户，第三方机构等)
-info:用户具体信息(对应info表中的id)
 password:用户密码(md5加密)
+cid:推送令牌
+state：在线状态0-不在线，1-表示在线
 */
 CREATE TABLE user
 (
@@ -21,6 +22,7 @@ CREATE TABLE user
 	kind int NOT NULL,
 	password varchar(30),
     cid varchar(40),
+    state int,
 	primary key(id),
 	unique(name)
 );
@@ -55,6 +57,7 @@ CREATE TABLE info
 	longitude DECIMAL,
 	primary key(id),
 	foreign key(id) references user(id)
+	ON DELETE CASCADE
 );
 
 /*
@@ -71,8 +74,9 @@ CREATE TABLE relation
 	cid int NOT NULL,
 	kind int NOT NULL,
 	primary key(id),
-	foreign key(usrid) references user(id),
+	foreign key(usrid) references user(id) ON DELETE CASCADE,
 	foreign key(cid) references user(id)
+	ON DELETE CASCADE
 );
 
 /*
@@ -92,8 +96,11 @@ CREATE TABLE event
 	state int NOT NULL,
 	content blob NOT NULL,
 	assist blob,
+	latitude DECIMAL,
+	longitude DECIMAL,
 	primary key(id),
 	foreign key(usrid) references user(id)
+	ON DELETE CASCADE
 );
 
 /*
@@ -111,8 +118,9 @@ CREATE TABLE helper
 	usrid int NOT NULL,
 	credit int,
 	primary key(id),
-	foreign key(eid) references event(id),
+	foreign key(eid) references event(id) ON DELETE CASCADE,
 	foreign key(usrid) references user(id)
+	ON DELETE CASCADE
 );
 
 /*
@@ -130,8 +138,9 @@ CREATE TABLE support
 	usrid int NOT NULL,
 	content blob NOT NULL,
 	primary key(id),
-	foreign key(eid) references event(id),
+	foreign key(eid) references event(id) ON DELETE CASCADE,
 	foreign key(usrid) references user(id)
+	ON DELETE CASCADE
 );
 
  /*
@@ -143,4 +152,5 @@ CREATE TABLE tpu
 	usrid int NOT NULL,
 	primary key(id),
 	foreign key(usrid) references user(id)
+	ON DELETE CASCADE
 )ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;

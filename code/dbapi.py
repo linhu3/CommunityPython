@@ -33,6 +33,16 @@ class dbapi:
 		cursor.close()
 		return result
 
+	def updateUserstate(self,uid,state):
+		cursor = self.db.cursor()
+		sql = "update user set state = %s where id = %s"
+		param =(state,uid)
+		cursor.execute(sql,param)
+		self.db.commit()
+		cursor.close()
+		return
+
+
 
 	def CheckRelationbyId(self,userid):
 		cursor=self.db.cursor(cursorclass=MySQLdb.cursors.DictCursor)

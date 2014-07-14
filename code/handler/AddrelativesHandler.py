@@ -12,7 +12,7 @@ class AddrelativesHandler(tornado.web.RequestHandler):
 
 	def post(self):
 		#content =self.request.body
-		content = '{"u_name":"ooo","r_name":"11oo"}'
+		content = '{"u_name":"test1","r_name":"test2"}'
 		j = json.loads(content)
 		row = self.application.dbapi.getRelationByUsername(j['u_name'], j['r_name'])
 		if row == 0:
