@@ -290,11 +290,11 @@ class dbapi:
 			else:
 				cursor.execute("select now()")
 				currentTime=cursor.fetchone()
-				sql="insert into event (usrid,kind,state,content,starttime) values (%s,%s,%s,%s,%s)"
-				param=(usrid["id"],message["kind"],0,message["content"],currentTime['now()'])
+				sql="insert into event (usrid,kind,state,content,starttime,latitude,longitude) values (%s,%s,%s,%s,%s,%s,%s)"
+				param=(usrid["id"],message["kind"],0,message["content"],currentTime['now()'],message['latitude'],message['longitude'])
 				if("assist" in message):
-					sql="insert into event (usrid,kind,state,content,assist,starttime) values (%s,%s,%s,%s,%s,%s)"
-					param=(usrid["id"],message["kind"],0,message["content"],message["assist"],currentTime['now()'])
+					sql="insert into event (usrid,kind,state,content,assist,starttime,latitude,longitude) values (%s,%s,%s,%s,%s,%s,%s,%s)"
+					param=(usrid["id"],message["kind"],0,message["content"],message["assist"],currentTime['now()'],message['latitude'],message['longitude'])
 				cursor.execute(sql,param)
 				self.db.commit()
 
