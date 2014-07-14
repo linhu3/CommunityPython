@@ -14,4 +14,5 @@ __all__ = ["RegisterHandler",
 					 "AddaidHandler",
 					 "SendsupportHandler",
 					 "QuitaidHandler",
-					 "EventHandler"]
+					 "EventHandler",
+					 "GetArroundEvent"]

@@ -42,6 +42,14 @@ class dbapi:
 		cursor.close()
 		return
 
+	#get user all info in user+info
+	#pre con: user exist
+	#after: return a dict result include all info of user
+	def getUserAllinfobyName(self,name):
+		cursor=self.db.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+		uid = self.getUserByUserName(name)['id']
+		return self.getUsermassegeByUserId(uid)
+
 	def CheckRelationbyId(self,userid):
 		cursor=self.db.cursor(cursorclass=MySQLdb.cursors.DictCursor)
 		sql="select * from relation where usrid=%s"
@@ -184,6 +192,7 @@ class dbapi:
 		self.db.commit()
 		cursor.close()
 		return
+
 	#cancle a user by user(id)
 	#pre condiction: uid exist
 	#after:delete all record of this user
@@ -195,6 +204,21 @@ class dbapi:
 		self.db.commit()
 		cursor.close()
 		return
+
+	#get all events around user(latitude,longitude) inside distance
+	#pre con:user(latitude,longitude) exist,distance >=0
+	#after:return a list contain event info or []
+	def getEventAround(self,longitude,latitude,distance):
+		cursor = self.db.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+		sql = "select * from event where 6371.004*ACOS(SIN(%s/180*PI())*SIN(latitude/180*PI())+COS(%s/180*PI())*COS(latitude/180*PI())*COS((%s-longitude)/180*PI())) < %s"
+		param = (latitude,latitude,longitude,distance)
+		cursor.execute(sql,param)
+		result= cursor.fetchall()
+		#for row in cursor.fetchall():
+		#	result.append(row)
+		#cursor.close()
+		return result
+
 
 	'''Yeqin Zheng, 09/07/2014'''
 	def getRelationByUsername(self, u_name, r_name):

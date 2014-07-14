@@ -39,8 +39,8 @@ address:地址
 illness:病史
 credit:用户信誉度(根据参与的所有事件评分-综合得出)
 score:用户积分(根据参与的所有事件-系统自动累积)
-latitude:经度
-longitude:纬度
+latitude:纬度
+longitude:经度
 */
 CREATE TABLE info
 (
@@ -53,8 +53,8 @@ CREATE TABLE info
 	illness varchar(255),
 	credit int,
 	score int,
-	latitude DECIMAL,
-	longitude DECIMAL,
+	latitude DECIMAL(12,7),
+	longitude DECIMAL(12,7),
 	primary key(id),
 	foreign key(id) references user(id)
 	ON DELETE CASCADE
@@ -87,8 +87,8 @@ kind:事件类型(安全，生活，健康)
 state:事件状态(求助中，结束)
 content:事件求助信息(包含位置，事件内容，时间等)
 assist:事件辅助信息(包含图片，语音等)
-latitude:经度
-longitude:纬度
+latitude:纬度
+longitude:经度
 starttime 求助开始时间,
 endtime	求助结束时间,
 */
@@ -100,8 +100,8 @@ CREATE TABLE event
 	state int NOT NULL,
 	content blob NOT NULL,
 	assist blob,
-	latitude DECIMAL,
-	longitude DECIMAL,
+	latitude DECIMAL(12,7),
+	longitude DECIMAL(12,7),
 	starttime datetime,
 	endtime	datetime,
 	primary key(id),
