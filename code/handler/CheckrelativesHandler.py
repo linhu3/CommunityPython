@@ -4,8 +4,10 @@ import tornado.httpserver
 import os
 class CheckrelativesHandler(tornado.web.RequestHandler):
         def post(self):
-		username=self.get_argument("content")
-		userid=self.application.dbapi.getUserByUserName(username)["id"]
+		#username=self.get_argument("content")
+		content = '{"username": "ooo"}'
+		j = json.loads(content)
+		userid=self.application.dbapi.getUserByUserName(j['username'])["id"]
 		re=self.application.dbapi.CheckRelationbyId(userid)
 		if re!=():
 			relatives=[]
