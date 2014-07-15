@@ -10,7 +10,7 @@ class RegisterHandler(tornado.web.RequestHandler):
 
 	def post(self):
 		#content = self.get_argument("content")
-		content = '{"username": "你好吗","password": "sda","kind": 1, "cardid":"tests2" ,"realname":"realtest2","sex":1,"age":41, "address":"iii","illness":"hijiiii"}'
+		content = '{"username": "test3","password": "sda","kind": 1, "cardid":"test3" ,"realname":"realtest2","sex":1,"age":41, "address":"iii","illness":"hijiiii"}'
 		j = json.loads(content)
 		if(self.application.dbapi.getUserByUserName(j['username']) is not None):
 			self.write("{'state':1}")

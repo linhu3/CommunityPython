@@ -32,7 +32,9 @@ class app(tornado.web.Application):
 			(r"/api/addaid",AddaidHandler.AddaidHandler),
 			(r"/api/sendsupport",SendsupportHandler.SendsupportHandler),
 			(r"/api/quitaid",QuitaidHandler.QuitaidHandler),
-			(r"/api/event",EventHandler.EventHandler)]
+			(r"/api/event",EventHandler.EventHandler),
+			(r"/api/updatecid",UpdateCid.UpdateCid),
+			(r"/api/getAround",GetArroundEvent.GetArroundEvent)]
 		tornado.web.Application.__init__(self,handlers,**settings)
 		self.dbapi=dbapi.dbapi()
 		

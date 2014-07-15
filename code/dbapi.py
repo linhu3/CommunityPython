@@ -42,6 +42,14 @@ class dbapi:
 		cursor.close()
 		return
 
+	#get user all info in user+info
+	#pre con: user exist
+	#after: return a dict result include all info of user
+	def getUserAllinfobyName(self,name):
+		cursor=self.db.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+		uid = self.getUserByUserName(name)['id']
+		return self.getUsermassegeByUserId(uid)
+
 	def CheckRelationbyId(self,userid):
 		cursor=self.db.cursor(cursorclass=MySQLdb.cursors.DictCursor)
 		sql="select * from relation where usrid=%s"
@@ -139,7 +147,6 @@ class dbapi:
 		return row
 
 	#update user cid by uid
-	#untest
 	def UpdateCidByuid(self,cid,uid):
 		cursor = self.db.cursor()
 		sql = "update user set cid = %s where id = %s"
@@ -184,6 +191,7 @@ class dbapi:
 		self.db.commit()
 		cursor.close()
 		return
+
 	#cancle a user by user(id)
 	#pre condiction: uid exist
 	#after:delete all record of this user
@@ -195,6 +203,44 @@ class dbapi:
 		self.db.commit()
 		cursor.close()
 		return
+
+	#get all events around user(latitude,longitude) inside distance
+	#pre con:user(latitude,longitude) exist,distance >=0
+	#after:return a list contain event info or []
+	def getEventAround(self,lon,lat,distance):
+		cursor = self.db.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+		#sql = "select round(6378.138*2*asin(sqrt(pow(sin( (event.latitude*pi()/180-(%s)*pi()/180)/2),2)+cos(event.latitude*pi()/180)*cos((%s)*pi()/180)* pow(sin( (event.longitude*pi()/180-(%s)*pi()/180)/2),2)))) from event"
+		#param = (lat,lat,lon)
+		sql = """select event.id,user.name,event.kind,event.content,event.assist,event.starttime from event,user where 
+				 exists(select id from event where event.latitude <= (%s+1) and event.latitude >= (%s-1) and longitude <= (%s+1) and longitude>=(%s-1))
+				 and event.usrid = user.id
+				 and event.state = 0
+				 and round(6378.138*2*asin(sqrt(pow(sin( (event.latitude*pi()/180-(%s)*pi()/180)/2),2)+cos(event.latitude*pi()/180)*cos((%s)*pi()/180)* pow(sin( (event.longitude*pi()/180-(%s)*pi()/180)/2),2)))) < %s """
+		param = (lat,lat,lon,lon,lat,lat,lon,distance)
+		cursor.execute(sql,param)
+		result = []
+		for row in cursor.fetchall():
+			result.append(row)
+		cursor.close()
+		return result
+
+	#get all user(cid) around latitude,longitude inside distance(use for push)
+	#pre condiction：lon,lat exist,distance>=0
+	#after :return a list coantain user.cid or []
+	def getUserCidAround(self,lon,lat,distance):
+		cursor = self.db.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+		sql = """select user.cid from user,info where
+				exists(select id from info where latitude <= (%s+1) and latitude >= (%s-1) and longitude <= (%s+1) and longitude>=(%s-1))
+				and user.state = 1
+				and user.id = info.id
+				and round(6378.138*2*asin(sqrt(pow(sin( (info.latitude*pi()/180-(%s)*pi()/180)/2),2)+cos(info.latitude*pi()/180)*cos((%s)*pi()/180)* pow(sin( (info.longitude*pi()/180-(%s)*pi()/180)/2),2)))) < %s"""
+		param = (lat,lat,lon,lon,lat,lat,lon,distance)
+		cursor.execute(sql,param)
+		result = []
+		for row in cursor.fetchall():
+			result.append(row)
+		cursor.close()
+		return result
 
 	'''Yeqin Zheng, 09/07/2014'''
 	def getRelationByUsername(self, u_name, r_name):
@@ -304,6 +350,48 @@ class dbapi:
 		cursor.close()
 
 	#07/09
+	def searchUserbySexAgeKind(self,content):
+		cursor=self.db.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+		if(content['sex']):
+			if(content['age']):
+				if(content['kind']):
+					sql="select user.id from user,info where info.sex=%s and info.age=%s and user.kind=%s"
+					param=(content['sex'],content['age'],content['kind'])
+				else:
+					sql="select user.id from user,info where info.sex=%s and info.age=%s"
+					param=(content['sex'],content['age'])
+			else:
+				if(content['kind']):
+					sql="select user.id from user,info where info.sex=%s and user.kind=%s"
+					param=(content['sex'],content['kind'])
+				else:
+					sql="select user.id from user,info where info.sex=%s"
+					param=(content['sex'])
+		else:
+			if(content['age']):
+				if(content['kind']):
+					sql="select user.id from user,info where ianfo.age=%s and user.kind=%s"
+					param=(content['age'],content['kind'])
+				else:
+					sql="select user.id from user,info where info.age=%s"
+					param=(content['age'])
+			else:
+				if(content['kind']):
+					sql="select user.id from user,info where user.kind=%s"
+					content(['kind'])
+				else:
+					data=[{'state':0}]
+		            result=json.dumps(data)
+					return result
+		cursor.execute(sql,param)
+		result1=cursor.fetchall()
+		userlist=[]
+		for x in result1:
+			userlist.append(self.getUserByUserId(x['id']))
+		data=[{'state':1},userlist]
+		result=json.dumps(data)
+		return result
+
 
 	#Anton Zhong
 	def getHelperByEventIdAndUserName(self,eid,username):

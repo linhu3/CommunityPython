@@ -17,7 +17,7 @@ class CheckrelativesHandler(tornado.web.RequestHandler):
 			for row in re:
 				name=self.application.dbapi.getUsermassegeByUserId(row["cid"])
 				print name
-				relatives.append(name )
+				relatives.append(name)
 			data1={'state':1,'ralatives':relatives}
 			data=json.dumps(data1)
 		else:
