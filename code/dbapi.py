@@ -258,6 +258,8 @@ class dbapi:
 		cursor.close()
 
 	#07/09
+	#seach user by sex,age,kind and return the row of table user
+	# it has 8 options
 	def searchUserbySexAgeKind(self,content):
 		cursor=self.db.cursor(cursorclass=MySQLdb.cursors.DictCursor)
 		if(content['sex']):
@@ -274,29 +276,32 @@ class dbapi:
 					param=(content['sex'],content['kind'])
 				else:
 					sql="select user.id from user,info where info.sex=%s"
-					param=(content['sex'])
+					param=(content['sex'],)
 		else:
 			if(content['age']):
 				if(content['kind']):
-					sql="select user.id from user,info where ianfo.age=%s and user.kind=%s"
+					sql="select user.id from user,info where info.age=%s and user.kind=%s"
 					param=(content['age'],content['kind'])
 				else:
 					sql="select user.id from user,info where info.age=%s"
-					param=(content['age'])
+					param=(content['age'],)
 			else:
 				if(content['kind']):
 					sql="select user.id from user,info where user.kind=%s"
-					content(['kind'])
+					param=(content['kind'],)
 				else:
-					data=[{'state':0}]
+					data=[{'state':0}]#input is null return state 0
 		            result=json.dumps(data)
 					return result
 		cursor.execute(sql,param)
 		result1=cursor.fetchall()
-		userlist=[]
-		for x in result1:
-			userlist.append(self.getUserByUserId(x['id']))
-		data=[{'state':1},userlist]
+		if(result1):
+			userlist=[]
+			for x in result1:
+				userlist.append(self.getUserByUserId(x['id']))
+			data=[{'state':1},userlist]#return the user table successly
+		else:
+			data=[{'state':2}]#the user not exist,return state 2
 		result=json.dumps(data)
 		return result
 
