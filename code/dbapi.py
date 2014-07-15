@@ -334,11 +334,13 @@ class dbapi:
 			if(not("kind" in message and "content" in message)):
 				return {"state":3,"errorDesc":"Messge Incomplete"}
 			else:
-				sql="insert into event (usrid,kind,state,content) values (%s,%s,%s,%s)"
-				param=(usrid["id"],message["kind"],0,message["content"])
+				cursor.execute("select now()")
+				currentTime=cursor.fetchone()
+				sql="insert into event (usrid,kind,state,content,starttime,latitude,longitude) values (%s,%s,%s,%s,%s,%s,%s)"
+				param=(usrid["id"],message["kind"],0,message["content"],currentTime['now()'],message['latitude'],message['longitude'])
 				if("assist" in message):
-					sql="insert into event (usrid,kind,state,content,assist) values (%s,%s,%s,%s,%s)"
-					param=(usrid["id"],message["kind"],0,message["content"],message["assist"])
+					sql="insert into event (usrid,kind,state,content,assist,starttime,latitude,longitude) values (%s,%s,%s,%s,%s,%s,%s,%s)"
+					param=(usrid["id"],message["kind"],0,message["content"],message["assist"],currentTime['now()'],message['latitude'],message['longitude'])
 				cursor.execute(sql,param)
 				self.db.commit()
 
@@ -425,8 +427,10 @@ class dbapi:
 			return {"errorCode":403,"errorDesc":"Messge Incomplete"}
 		else:
 			cursor=self.db.cursor(cursorclass=MySQLdb.cursors.DictCursor)
-			sql="insert into support (eid,usrid,content) values (%s,%s,%s)"
-			param=(eid,self.getUserIdByUserName(username)["id"],message["content"])
+			cursor.execute("select now()")
+			currentTime=cursor.fetchone()
+			sql="insert into support (eid,usrid,content,time) values (%s,%s,%s.%s)"
+			param=(eid,self.getUserIdByUserName(username)["id"],message["content"],currentTime['now()'])
 			cursor.execute(sql,param)
 			self.db.commit()
 			cursor.execute("select last_insert_id()")
