@@ -16,6 +16,6 @@ class GetArroundEvent(tornado.web.RequestHandler):
 			self.write("{'state':2}")
 			print "username not exist"
 			return
-		result = self.application.dbapi.getEventAround(user['latitude'],user['longitude'],3)
-		self.write(str(result))
+		result = self.application.dbapi.getUserAround(user['longitude'],user['latitude'],150)
+		self.write("{'state':1,aids:"+str(result)+"}")
 		return

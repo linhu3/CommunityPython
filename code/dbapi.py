@@ -147,7 +147,6 @@ class dbapi:
 		return row
 
 	#update user cid by uid
-	#untest
 	def UpdateCidByuid(self,cid,uid):
 		cursor = self.db.cursor()
 		sql = "update user set cid = %s where id = %s"
@@ -208,17 +207,40 @@ class dbapi:
 	#get all events around user(latitude,longitude) inside distance
 	#pre con:user(latitude,longitude) exist,distance >=0
 	#after:return a list contain event info or []
-	def getEventAround(self,longitude,latitude,distance):
+	def getEventAround(self,lon,lat,distance):
 		cursor = self.db.cursor(cursorclass=MySQLdb.cursors.DictCursor)
-		sql = "select * from event where 6371.004*ACOS(SIN(%s/180*PI())*SIN(latitude/180*PI())+COS(%s/180*PI())*COS(latitude/180*PI())*COS((%s-longitude)/180*PI())) < %s"
-		param = (latitude,latitude,longitude,distance)
+		#sql = "select round(6378.138*2*asin(sqrt(pow(sin( (event.latitude*pi()/180-(%s)*pi()/180)/2),2)+cos(event.latitude*pi()/180)*cos((%s)*pi()/180)* pow(sin( (event.longitude*pi()/180-(%s)*pi()/180)/2),2)))) from event"
+		#param = (lat,lat,lon)
+		sql = """select event.id,user.name,event.kind,event.content,event.assist,event.starttime from event,user where 
+				 exists(select id from event where event.latitude <= (%s+1) and event.latitude >= (%s-1) and longitude <= (%s+1) and longitude>=(%s-1))
+				 and event.usrid = user.id
+				 and event.state = 0
+				 and round(6378.138*2*asin(sqrt(pow(sin( (event.latitude*pi()/180-(%s)*pi()/180)/2),2)+cos(event.latitude*pi()/180)*cos((%s)*pi()/180)* pow(sin( (event.longitude*pi()/180-(%s)*pi()/180)/2),2)))) < %s """
+		param = (lat,lat,lon,lon,lat,lat,lon,distance)
 		cursor.execute(sql,param)
-		result= cursor.fetchall()
-		#for row in cursor.fetchall():
-		#	result.append(row)
-		#cursor.close()
+		result = []
+		for row in cursor.fetchall():
+			result.append(row)
+		cursor.close()
 		return result
 
+	#get all user(cid) around latitude,longitude inside distance(use for push)
+	#pre condiction：lon,lat exist,distance>=0
+	#after :return a list coantain user.cid or []
+	def getUserCidAround(self,lon,lat,distance):
+		cursor = self.db.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+		sql = """select user.cid from user,info where
+				exists(select id from info where latitude <= (%s+1) and latitude >= (%s-1) and longitude <= (%s+1) and longitude>=(%s-1))
+				and user.state = 1
+				and user.id = info.id
+				and round(6378.138*2*asin(sqrt(pow(sin( (info.latitude*pi()/180-(%s)*pi()/180)/2),2)+cos(info.latitude*pi()/180)*cos((%s)*pi()/180)* pow(sin( (info.longitude*pi()/180-(%s)*pi()/180)/2),2)))) < %s"""
+		param = (lat,lat,lon,lon,lat,lat,lon,distance)
+		cursor.execute(sql,param)
+		result = []
+		for row in cursor.fetchall():
+			result.append(row)
+		cursor.close()
+		return result
 
 	'''Yeqin Zheng, 09/07/2014'''
 	def getRelationByUsername(self, u_name, r_name):
