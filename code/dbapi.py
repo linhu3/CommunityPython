@@ -348,6 +348,48 @@ class dbapi:
 		cursor.close()
 
 	#07/09
+	def searchUserbySexAgeKind(self,content):
+		cursor=self.db.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+		if(content['sex']):
+			if(content['age']):
+				if(content['kind']):
+					sql="select user.id from user,info where info.sex=%s and info.age=%s and user.kind=%s"
+					param=(content['sex'],content['age'],content['kind'])
+				else:
+					sql="select user.id from user,info where info.sex=%s and info.age=%s"
+					param=(content['sex'],content['age'])
+			else:
+				if(content['kind']):
+					sql="select user.id from user,info where info.sex=%s and user.kind=%s"
+					param=(content['sex'],content['kind'])
+				else:
+					sql="select user.id from user,info where info.sex=%s"
+					param=(content['sex'])
+		else:
+			if(content['age']):
+				if(content['kind']):
+					sql="select user.id from user,info where ianfo.age=%s and user.kind=%s"
+					param=(content['age'],content['kind'])
+				else:
+					sql="select user.id from user,info where info.age=%s"
+					param=(content['age'])
+			else:
+				if(content['kind']):
+					sql="select user.id from user,info where user.kind=%s"
+					content(['kind'])
+				else:
+					data=[{'state':0}]
+		            result=json.dumps(data)
+					return result
+		cursor.execute(sql,param)
+		result1=cursor.fetchall()
+		userlist=[]
+		for x in result1:
+			userlist.append(self.getUserByUserId(x['id']))
+		data=[{'state':1},userlist]
+		result=json.dumps(data)
+		return result
+
 
 	#Anton Zhong
 	def getHelperByEventIdAndUserName(self,eid,username):
