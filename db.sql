@@ -33,7 +33,7 @@ id:对应用户id
 cardid:身份证号
 phone:电话
 name:用户昵称
-sex:性别
+sex:性别	(男1，女2)
 age:年龄
 address:地址
 illness:病史
@@ -65,7 +65,7 @@ CREATE TABLE info
 id:自增id
 usrid:用户id
 oid:对应用户id
-kind:关系类型(关注好友，亲友等等)
+kind:关系类型(关注好友2，亲友1等等)
 */
 CREATE TABLE relation
 (
@@ -83,9 +83,9 @@ CREATE TABLE relation
 事件表
 id:自增id
 usrid:求助者id
-kind:事件类型(安全，生活，健康)
-state:事件状态(求助中，结束)
-content:事件求助信息(包含位置，事件内容，时间等)
+kind:事件类型(安全1，生活2，健康3)
+state:事件状态(求助中0，结束1)
+content:事件求助信息(事件内容等)
 assist:事件辅助信息(包含图片，语音等)
 latitude:纬度
 longitude:经度
@@ -162,3 +162,62 @@ CREATE TABLE tpu
 	foreign key(usrid) references user(id)
 	ON DELETE CASCADE
 )ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*
+添加6用户（3男3女）：
+*/
+insert into user(name,kind,password,state) values("test1",1,"passwordtest1",1);
+insert into user(name,kind,password,state) values("test2",2,"密码test2",1);
+insert into user(name,kind,password,state) values("test3",3,"passwordtest3",1);
+insert into user(name,kind,password,state) values("测试test4",1,"passwordtest4",0);
+insert into user(name,kind,password,state) values("test5",2,"passwordtest5",1);
+insert into user(name,kind,password,state) values("test6",3,"passwordtest6",0);
+
+insert into info(id,cardid,name,sex,age,address,illness,credit,score,latitude,longitude) values(1,"test1cardid","realtest1",1,21,"广州耶1","你才有病",0,0,23.000000,23.000000);
+insert into info(id,cardid,name,sex,age,address,illness,credit,score,latitude,longitude) values(2,"test2cardid","realtest2",1,25,"广州耶2","我有病",0,0,23.001000,23.000000);
+insert into info(id,cardid,name,sex,age,address,illness,credit,score,latitude,longitude) values(3,"测试test3cardid","realtest3",1,46,"广州耶3","你才有病",0,0,23.000000,23.001000);
+insert into info(id,cardid,name,sex,age,address,illness,credit,score,latitude,longitude) values(4,"test4cardid","测试realtest4",2,21,"广州耶4","我有病",0,0,23.00000,24.000000);
+insert into info(id,cardid,name,sex,age,address,illness,credit,score,latitude,longitude) values(5,"test5cardid","realtest5",2,15,"广州耶5","你才有病",0,0,24.000000,23.000000);
+insert into info(id,cardid,name,sex,age,address,illness,credit,score,latitude,longitude) values(6,"test6cardid","realtest6",2,65,"广州耶6","我有病",0,0,25.000000,25.000000);
+/*
+绑定关系1->2,1->4,2->6,2->5:
+*/
+insert into relation(usrid,cid,kind) values(1,2,1);
+insert into relation(usrid,cid,kind) values(1,4,2);
+insert into relation(usrid,cid,kind) values(2,6,1);
+insert into relation(usrid,cid,kind) values(2,5,2);
+/*
+添加3事件：
+事件1：1发起 安全1
+事件1：3发起 生活2
+事件1：6发起 健康3
+*/
+insert into event(usrid,kind,state,content,latitude,longitude,starttime) values(1,1,0,"安全事件啦",23.001000,23.001000,"2014-07-14 16:55:54");
+insert into event(usrid,kind,state,content,latitude,longitude,starttime) values(3,2,0,"生活事件啦",25.001000,23.001000,"2014-07-15 08:45:54");
+insert into event(usrid,kind,state,content,latitude,longitude,starttime) values(6,3,0,"健康事件啦",23.001020,23.001030,"2014-07-15 08:00:54");
+
+/*
+添加helper
+1，2,4,6
+2，1,5
+3，2,3,5
+*/
+insert into helper(eid,usrid) values(1,2);
+insert into helper(eid,usrid) values(1,4);
+insert into helper(eid,usrid) values(1,6);
+insert into helper(eid,usrid) values(2,1);
+insert into helper(eid,usrid) values(3,5);
+insert into helper(eid,usrid) values(3,2);
+insert into helper(eid,usrid) values(3,3);
+insert into helper(eid,usrid) values(3,5);
+
+/*添加辅助信息
+1：2发，6发
+2：5发
+3：3发，5发*/
+insert into support(eid,usrid,content,time) values(1,2,"2援助事件1","2014-07-14 17:00:54");
+insert into support(eid,usrid,content,time) values(1,2,"6援助事件1","2014-07-14 17:12:54");
+
+insert into support(eid,usrid,content,time) values(2,5,"5援助事件2","2014-07-15 09:10:54");
+
+insert into support(eid,usrid,content,time) values(3,3,"3援助事件3","2014-07-15 08:10:54");
+insert into support(eid,usrid,content,time) values(3,5,"5援助事件4","2014-07-15 08:10:54");
