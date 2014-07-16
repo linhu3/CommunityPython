@@ -152,8 +152,8 @@ class dbapi:
 		cursor.close()
 		return
 
-    #get all relativeName by user.id
-    #return a list contain all relations(including uid)
+	#get all relativeName by user.id
+	#return a list contain all relations(including uid)
 	def getAllRelativeNamebyUid(self,uid):
 		cursor = self.db.cursor(cursorclass=MySQLdb.cursors.DictCursor)
 		sql = "select * from relation where usrid = %s"
@@ -291,7 +291,7 @@ class dbapi:
 					param=(content['kind'],)
 				else:
 					data=[{'state':0}]#input is null return state 0
-		            result=json.dumps(data)
+					result=json.dumps(data)
 					return result
 		cursor.execute(sql,param)
 		result1=cursor.fetchall()
@@ -314,11 +314,12 @@ class dbapi:
 			cursor.execute(sql,param)
 			self.db.commit()
 			data=[{'state':1}]#update success return state 1
-		    result=json.dumps(data)
+			result=json.dumps(data)
 			return result
+			
 		else:
 			data=[{'state':0}]#input is null return state 0
-		    result=json.dumps(data)
+			result=json.dumps(data)
 			return result
 		cursor.close()
 
