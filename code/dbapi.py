@@ -208,7 +208,7 @@ class dbapi:
 	#pre con:user(latitude,longitude) exist,distance >=0
 	#after:return a list contain event info or []
 	def getEventAround(self,lon,lat,distance):
-		cursor = self.db.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+		cursor = self.db. cursor(cursorclass=MySQLdb.cursors.DictCursor)
 		#sql = "select round(6378.138*2*asin(sqrt(pow(sin( (event.latitude*pi()/180-(%s)*pi()/180)/2),2)+cos(event.latitude*pi()/180)*cos((%s)*pi()/180)* pow(sin( (event.longitude*pi()/180-(%s)*pi()/180)/2),2)))) from event"
 		#param = (lat,lat,lon)
 		sql = """select event.id,user.name,event.kind,event.content,event.assist,event.starttime from event,user where 
@@ -381,7 +381,7 @@ class dbapi:
 					content(['kind'])
 				else:
 					data=[{'state':0}]
-		            result=json.dumps(data)
+					result=json.dumps(data)
 					return result
 		cursor.execute(sql,param)
 		result1=cursor.fetchall()

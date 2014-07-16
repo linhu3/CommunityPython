@@ -8,7 +8,7 @@ class CheckrelativesHandler(tornado.web.RequestHandler):
 
 	def post(self):
 		#content =self.request.body
-		content = '{"username":"ooo"}'
+		content = '{"username":"test1"}'
 		j = json.loads(content)
 		userid=self.application.dbapi.getUserByUserName(j['username'])["id"]
 		re=self.application.dbapi.CheckRelationbyId(userid)
@@ -18,9 +18,7 @@ class CheckrelativesHandler(tornado.web.RequestHandler):
 				name=self.application.dbapi.getUsermassegeByUserId(row["cid"])
 				print name
 				relatives.append(name)
-			data1={'state':1,'ralatives':relatives}
-			data=json.dumps(data1)
+			data={'state':1,'ralatives':str(relatives)}
 		else:
-			data1={'state':1,'relatives':''}
-			data=json.dumps(data1)
+			data={'state':1,'relatives':'[]'}
 		self.write(data)
