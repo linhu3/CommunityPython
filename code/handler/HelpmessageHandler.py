@@ -9,7 +9,7 @@ class HelpmessageHandler(tornado.web.RequestHandler):
 
 	def post(self):
 		#content =self.request.body
-		content='{"username":"oo","message":{"kind":1,"content":"TestContent","assist":"TestAssist",latitude:123.4,longitude:123.4}}'
+		content='{"username":"oo","message":{"kind":1,"content":"TestContent","assist":"TestAssist","latitude":123.4,"longitude":123.4}}'
 		jobj=json.loads(content)
 		result=self.application.dbapi.addEventByUserName(jobj["username"],jobj["message"])
 		self.write(str(result))
