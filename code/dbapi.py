@@ -305,6 +305,23 @@ class dbapi:
 		result=json.dumps(data)
 		return result
 
+	#update the password by userid and userpassword
+	def UpdatePassword(self,content):
+		cursor=self.db.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+		if(content['passwd']):
+			sql="update user set passwd=%s where id=%s"
+			param=(content['passwd'],content['id'])
+			cursor.execute(sql,param)
+			self.db.commit()
+			data=[{'state':1}]#update success return state 1
+		    result=json.dumps(data)
+			return result
+		else:
+			data=[{'state':0}]#input is null return state 0
+		    result=json.dumps(data)
+			return result
+		cursor.close()
+
 
 	#Anton Zhong
 	def getHelperByEventIdAndUserName(self,eid,username):
