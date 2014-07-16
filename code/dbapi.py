@@ -168,8 +168,8 @@ class dbapi:
 		cursor.close()
 		return
 
-    #get all relativeName by user.id
-    #return a list contain all relations(including uid)
+	#get all relativeName by user.id
+	#return a list contain all relations(including uid)
 	def getAllRelativeNamebyUid(self,uid):
 		cursor = self.db.cursor(cursorclass=MySQLdb.cursors.DictCursor)
 		sql = "select * from relation where usrid = %s"
@@ -350,6 +350,9 @@ class dbapi:
 		cursor.close()
 
 	#07/09
+
+	#seach user by sex,age,kind and return the row of table user
+	# it has 8 options
 	def searchUserbySexAgeKind(self,content):
 		cursor=self.db.cursor(cursorclass=MySQLdb.cursors.DictCursor)
 		if(content['sex']):
@@ -366,31 +369,52 @@ class dbapi:
 					param=(content['sex'],content['kind'])
 				else:
 					sql="select user.id from user,info where info.sex=%s"
-					param=(content['sex'])
+					param=(content['sex'],)
 		else:
 			if(content['age']):
 				if(content['kind']):
-					sql="select user.id from user,info where ianfo.age=%s and user.kind=%s"
+					sql="select user.id from user,info where info.age=%s and user.kind=%s"
 					param=(content['age'],content['kind'])
 				else:
 					sql="select user.id from user,info where info.age=%s"
-					param=(content['age'])
+					param=(content['age'],)
 			else:
 				if(content['kind']):
 					sql="select user.id from user,info where user.kind=%s"
-					content(['kind'])
+					param=(content['kind'],)
 				else:
-					data=[{'state':0}]
+					data=[{'state':0}]#input is null return state 0
 					result=json.dumps(data)
 					return result
 		cursor.execute(sql,param)
 		result1=cursor.fetchall()
-		userlist=[]
-		for x in result1:
-			userlist.append(self.getUserByUserId(x['id']))
-		data=[{'state':1},userlist]
+		if(result1):
+			userlist=[]
+			for x in result1:
+				userlist.append(self.getUserByUserId(x['id']))
+			data=[{'state':1},userlist]#return the user table successly
+		else:
+			data=[{'state':2}]#the user not exist,return state 2
 		result=json.dumps(data)
 		return result
+
+	#update the password by userid and userpassword
+	def UpdatePassword(self,content):
+		cursor=self.db.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+		if(content['passwd']):
+			sql="update user set passwd=%s where id=%s"
+			param=(content['passwd'],content['id'])
+			cursor.execute(sql,param)
+			self.db.commit()
+			data=[{'state':1}]#update success return state 1
+			result=json.dumps(data)
+			return result
+			
+		else:
+			data=[{'state':0}]#input is null return state 0
+			result=json.dumps(data)
+			return result
+		cursor.close()
 
 
 	#Anton Zhong
