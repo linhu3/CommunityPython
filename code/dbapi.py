@@ -61,7 +61,7 @@ class dbapi:
 
 	def getUsermassegeByUserId(self,userid):
 		cursor=self.db.cursor(cursorclass=MySQLdb.cursors.DictCursor)
-		sql="select * from user ,info where user.id=%s and info.id=%s"
+		sql="select user.name,info.name,info.sex,info.age,info.address,info.illness,info.credit,info.score from user ,info where user.id=%s and info.id=%s"
 		param=(userid,userid)
 		cursor.execute(sql,param)
 		result=cursor.fetchone()
@@ -381,7 +381,7 @@ class dbapi:
 					content(['kind'])
 				else:
 					data=[{'state':0}]
-		            result=json.dumps(data)
+					result=json.dumps(data)
 					return result
 		cursor.execute(sql,param)
 		result1=cursor.fetchall()
