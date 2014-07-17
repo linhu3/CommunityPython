@@ -1,15 +1,16 @@
+# -*- coding: utf-8 -*-
 import tornado.ioloop
 import tornado.web
 import tornado.httpserver
-import json
+import json,base64,os
 
 class RegisterHandler(tornado.web.RequestHandler):
 	def get(self):
-		self.write("<p>RegisterHandler</p><form action='/api/register' method='post'><input type='submit' value='submit'></form>")
+		self.write("<p>RegisterHandler</p><form action='/api/register' method='post'><input type='submit' value='submit'></form>")	
 
 	def post(self):
 		#content = self.get_argument("content")
-		content = '{"username": "11oo","password": 111111,"kind": 1, "cardid":"4df2434q" ,"realname":"hiii","sex":1,"age":41, "address":"iii","illness":"hijiiii"}'
+		content = '{"username": "test","password": "1","kind": 1, "cardid":"test" ,"realname":"1","sex":1,"age":1, "address":"1","illness":"1","file":"1"}'
 		j = json.loads(content)
 		if(self.application.dbapi.getUserByUserName(j['username']) is not None):
 			self.write("{'state':1}")
@@ -19,8 +20,14 @@ class RegisterHandler(tornado.web.RequestHandler):
 			self.write("{'state':2}")
 			print "cardid exist"
 			return
-		
 		self.application.dbapi.register(j)
+
+		#test
+		avatar=open(os.path.abspath('./static/avatar/test.png'),"rb");
+		filestring=base64.standard_b64encode(avatar.read())
+		self.application.util.setAvatar(j['username'],filestring,self.application.dbapi)
+		
+		u = self.application.dbapi.getUserByUserName(j['username']);
 		self.write("{'state':3}")
 		print("Register")
 		return

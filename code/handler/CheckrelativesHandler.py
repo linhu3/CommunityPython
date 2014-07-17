@@ -1,11 +1,14 @@
 import tornado.ioloop
 import tornado.web
 import tornado.httpserver
-import os
+import os,json
 class CheckrelativesHandler(tornado.web.RequestHandler):
-        def post(self):
-		#username=self.get_argument("content")
-		content = '{"username": "ooo"}'
+	def get(self):
+		self.write("<p>CheckrelativesHandler</p><form action='/api/checkrelatives' method='post'><input type='submit' value='submit'></form>")
+
+	def post(self):
+		#content =self.request.body
+		content = '{"username":"test1"}'
 		j = json.loads(content)
 		userid=self.application.dbapi.getUserByUserName(j['username'])["id"]
 		re=self.application.dbapi.CheckRelationbyId(userid)
@@ -13,10 +16,9 @@ class CheckrelativesHandler(tornado.web.RequestHandler):
 			relatives=[]
 			for row in re:
 				name=self.application.dbapi.getUsermassegeByUserId(row["cid"])
+				print name
 				relatives.append(name)
-			data1=[{'state':1},relatives]
-			data=json.dumps(data1)
+			data={'state':1,'ralatives':str(relatives)}
 		else:
-			data1=[{'state':0}]
-			data=json.dumps(data1)
+			data={'state':1,'relatives':'[]'}
 		self.write(data)
