@@ -104,6 +104,62 @@ class dbapi:
 			return []
 		return self.getEventsByUserId(user["id"])
 
+	#get supports by uid
+	def getSupportsbyUid(self,uid):
+		cursor=self.db.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+		sql="select user.name,support.eid,support.content,support.time from support,user where usrid = user.id and usrid = %s"
+		param=(uid,)
+		cursor.execute(sql,param)
+		result=cursor.fetchall()
+		cursor.close()
+		return list(result)
+
+	#get supports by username
+	def getSupportsbyUsername(self,username):
+		user=self.getUserByUserName(username)
+		if(not user):
+			return []
+		return self.getSupportsbyUid(user["id"])
+
+	#insert follow uid->eid
+	def insertFollow(self,uid,eid):
+		cursor = self.db.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+		cursor.execute("select now()")
+		currentTime=cursor.fetchone()
+		sql = "insert into follow(eid,usrid,time) values(%s,%s,%s)"
+		param = (eid,uid,currentTime['now()'])
+		try:
+			cursor.execute(sql,param)
+			self.db.commit()
+		except:
+			self.db.rollback()
+		cursor.close()
+		return
+
+	#delect follow uid->eid
+	def delectFollow(self,uid,eid):
+		cursor = self.db.cursor()
+		sql = "delete follow where eid = %s and usrid = %s"
+		param = (eid,uid)
+		try:
+			cursor.execute(sql,param)
+			self.db.commit()
+		except:
+			self.db.rollback()
+		cursor.close()
+		return
+
+	#get follow by uid,eid
+	#if no recode,rerun None;else return dir
+	def getFollow(self,uid,eid):
+		cursor = self.db.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+		sql = "select * from follow where eid = %s and usrid = %s"
+		param = (eid,uid)
+		cursor.execute(sql,param)
+		result=cursor.fetchone()
+		cursor.close()
+		return result
+
 	#check if cardid exist
 	#exist return dict
 	#not exist return none

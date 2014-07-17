@@ -10,7 +10,7 @@ class RegisterHandler(tornado.web.RequestHandler):
 
 	def post(self):
 		#content = self.get_argument("content")
-		content = '{"username": "12","password": "1","kind": 1, "cardid":"12" ,"realname":"1","sex":1,"age":1, "address":"1","illness":"1","file":"1"}'
+		content = '{"username": "test","password": "1","kind": 1, "cardid":"test" ,"realname":"1","sex":1,"age":1, "address":"1","illness":"1","file":"1"}'
 		j = json.loads(content)
 		if(self.application.dbapi.getUserByUserName(j['username']) is not None):
 			self.write("{'state':1}")
@@ -31,5 +31,3 @@ class RegisterHandler(tornado.web.RequestHandler):
 		self.write("{'state':3}")
 		print("Register")
 		return
-
-	

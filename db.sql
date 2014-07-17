@@ -1,6 +1,7 @@
 ﻿drop table IF EXISTS tpu;
 drop table IF EXISTS support;
 drop table IF EXISTS helper;
+drop table IF EXISTS follow;
 drop table IF EXISTS event;
 drop table IF EXISTS relation;
 drop table IF EXISTS info;
@@ -127,6 +128,17 @@ CREATE TABLE helper
 	foreign key(eid) references event(id) ON DELETE CASCADE,
 	foreign key(usrid) references user(id)
 	ON DELETE CASCADE
+)DEFAULT CHARSET=utf8;
+
+
+ CREATE TABLE follow
+(
+	eid int NOT NULL,
+	usrid int NOT NULL,
+	time datetime,
+	primary key(eid,usrid),
+	foreign key(eid) references event(id) ON DELETE CASCADE,
+	foreign key(usrid) references user(id) ON DELETE CASCADE
 )DEFAULT CHARSET=utf8;
 
 /*
