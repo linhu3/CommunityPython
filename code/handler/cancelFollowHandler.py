@@ -9,13 +9,18 @@ class cancelFollowHandler(tornado.web.RequestHandler):
 
 	def post(self):
 		content='{"id":2,"name":"ooo"}'
-		jobj=json.loads(content)
-		pass
-		"""
-		传入格式{username:,eid:}
-		先判断user是否存在，不存在返回状态2
-		取消前用getFollow判断是否已经关注
-		没关注过直接返回状态3，
-		否则取消关注delectFollow，返回状态1
-		返回格式{state：x}
-		"""
+		j=json.loads(content)
+		user=self.application.dbapi.getUserByUserName(j['name'])["id"]
+		if(user):
+			if(self.application.dbapi.getFollow(user["id"],j['id'])):
+				self.application.dbapi.delectFollow(user["id"],j['id'])
+				data=[{'state':1}]#delete follow success
+				result=json.dumps(data)
+			else:
+				data=[{'state':3}]#have no follow
+				result=json.dumps(data)
+		else:
+			data=[{'state':2}]#user no exist
+			result=json.dumps(data)
+		#return result
+

@@ -8,13 +8,18 @@ class startFollowHandler(tornado.web.RequestHandler):
 		self.write("<p>startFollowHandler</p><form action='/api/startfollow' method='post'><input type='submit' value='submit'></form>")
 
 	def post(self):
-		pass
-		"""
-		传入格式{username:,eid:}
-		先判断user是否存在，不存在返回状态2
-		{username:,eid:}
-		关注前用getFollow判断是否已经关注
-		关注过则直接返回状态3，
-		否则关注insertFollow，返回状态1
-		返回格式{state：x}
-		"""
+		content='{"id":2,"name":"ooo"}'
+		j=json.loads(content)
+		user=self.application.dbapi.getUserByUserName(j['name'])["id"]
+		if(user):
+			if(self.application.dbapi.getFollow(user["id"],j['id'])):
+				data=[{'state':3}]#have  been followed
+				result=json.dumps(data)
+			else:
+				self.application.dbapi.insertFollow(user["id"],j['id'])
+				data=[{'state':1}]#start follow success
+				result=json.dumps(data)
+		else:
+			data=[{'state':2}]#user no exist
+			result=json.dumps(data)
+		#return result
