@@ -10,7 +10,7 @@ class RegisterHandler(tornado.web.RequestHandler):
 
 	def post(self):
 		#content = self.get_argument("content")
-		content = '{"username": "8","password": "1","kind": 1, "cardid":"8" ,"realname":"1","sex":1,"age":1, "address":"1","illness":"1","file":"1"}'
+		content = '{"username": "12","password": "1","kind": 1, "cardid":"12" ,"realname":"1","sex":1,"age":1, "address":"1","illness":"1","file":"1"}'
 		j = json.loads(content)
 		if(self.application.dbapi.getUserByUserName(j['username']) is not None):
 			self.write("{'state':1}")
@@ -25,7 +25,7 @@ class RegisterHandler(tornado.web.RequestHandler):
 		#test
 		avatar=open(os.path.abspath('./static/avatar/test.png'),"rb");
 		filestring=base64.standard_b64encode(avatar.read())
-		self.util.setAvatar(j['username'],filestring,self.application.dbapi)
+		self.application.util.setAvatar(j['username'],filestring,self.application.dbapi)
 		
 		u = self.application.dbapi.getUserByUserName(j['username']);
 		self.write("{'state':3}")
