@@ -37,7 +37,8 @@ class app(tornado.web.Application):
 			(r"/api/updateuserinfo",UpdateUserInfoHandler.UpdateUserInfoHandler),
 			(r"/api/getAround",GetArroundEvent.GetArroundEvent),
 			(r"/api/startfollow",startFollowHandler.startFollowHandler),
-			(r"/api/cancelfollow",cancelFollowHandler.cancelFollowHandler)]
+			(r"/api/cancelfollow",cancelFollowHandler.cancelFollowHandler),
+			(r"/api/addtemprelation",AddtemprelationHandler.AddtemprelationHandler)]
 		tornado.web.Application.__init__(self,handlers,**settings)
 		self.dbapi=dbapi.dbapi()
 		self.util=util.util()

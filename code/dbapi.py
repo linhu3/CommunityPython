@@ -633,5 +633,32 @@ class dbapi:
 		return {"errorCode":200,"errorDesc":""}
 	#07/10
 
+
+	#add relation from temprelation or not
+	# lin 7/21
+	def addrelation(self,uid,cid,condition,kind):
+		cursor = self.db.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+		if(condition!="yes"):
+			sql="delete from temprelation where uid=%s and cid=%s"
+			param=(uid,cid)
+			cursor.execute(sql,param)
+			self.db.commit()
+			data=[{'state':0},{'dec':"the cid not accept the request"}]#not accept the request return 0
+			result=json.dumps(data)
+			return result
+		else:
+			sql="insert relation(usrid,cid,kind)value(%s,%s,%s)" 
+			param=(uid,cid,kind)
+			cursor.execute(sql,param)
+			sql="delete from temprelation where uid=%s and cid=%s"
+			param=(uid,cid)
+			cursor.execute(sql,param)
+			self.db.commit()
+			data=[{'state':1},{'dec':"add relation success"}]#add relation success return state 1
+			result=json.dumps(data)
+			return result
+		cursor.close()
+
+
 	def __del__(self):
 		self.db.close()
